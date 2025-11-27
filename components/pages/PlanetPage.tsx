@@ -1,68 +1,65 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase"
-import Link from "next/link"
-import { Search, Thermometer, Activity, Globe } from "lucide-react"
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { Search, Thermometer, Activity, Globe } from "lucide-react";
 
-// Interface sesuai tabel planets
 interface Planet {
-  id: string
-  name: string
-  type: string
-  image_url: string
-  temperature: string
-  gravity: string
-  order_from_sun: number
+  id: string;
+  name: string;
+  type: string;
+  image_url: string;
+  temperature: string;
+  gravity: string;
+  order_from_sun: number;
 }
 
-const PLANET_TYPES = ["Semua", "Terrestrial", "Gas Giant", "Ice Giant"]
+const PLANET_TYPES = ["Semua", "Terrestrial", "Gas Giant", "Ice Giant"];
 
 export default function PlanetsPage() {
-  // State Data
-  const [planets, setPlanets] = useState<Planet[]>([])
-  const [loading, setLoading] = useState(true)
+  const [planets, setPlanets] = useState<Planet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState("Semua");
 
-  // State Filter & Search
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedType, setSelectedType] = useState("Semua")
-
-  // 1. Fetch Data Planet
   useEffect(() => {
     const fetchPlanets = async () => {
-      setLoading(true)
-      // Order by order_from_sun agar urut dari Merkurius
+      setLoading(true);
       const { data, error } = await supabase
         .from("planets")
         .select("*")
-        .order("order_from_sun", { ascending: true })
-      
+        .order("order_from_sun", { ascending: true });
+
       if (error) {
-        console.error("Error fetching planets:", error)
+        console.error("Error fetching planets:", error);
       } else {
-        setPlanets(data || [])
+        setPlanets(data || []);
       }
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    fetchPlanets()
-  }, [])
+    fetchPlanets();
+  }, []);
 
-  // 2. Logika Filter
   const filteredPlanets = planets.filter((planet) => {
-    const matchesSearch = planet.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = selectedType === "Semua" || planet.type === selectedType
-    return matchesSearch && matchesType
-  })
+    const matchesSearch = planet.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesType =
+      selectedType === "Semua" || planet.type === selectedType;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20 px-4 relative overflow-hidden">
-      
-      {/* --- ANIMATED BACKGROUND (Sama seperti Catalog) --- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" style={{animationDelay: '1s'}}></div>
-        
+        <div
+          className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+
         {/* Floating Stars */}
         {[...Array(40)].map((_, i) => (
           <div
@@ -72,14 +69,13 @@ export default function PlanetsPage() {
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3
+              opacity: Math.random() * 0.7 + 0.3,
             }}
           ></div>
         ))}
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        
         {/* HEADER SECTION */}
         <div className="mb-10 text-center">
           <div className="relative inline-block mb-4">
@@ -135,7 +131,9 @@ export default function PlanetsPage() {
               <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-800 border-t-orange-500 mb-4"></div>
               <div className="absolute inset-0 rounded-full bg-orange-500/20 blur-xl animate-pulse"></div>
             </div>
-            <p className="text-slate-300 font-medium">🚀 Menyiapkan peluncuran...</p>
+            <p className="text-slate-300 font-medium">
+              🚀 Menyiapkan peluncuran...
+            </p>
           </div>
         )}
 
@@ -143,22 +141,22 @@ export default function PlanetsPage() {
         {!loading && filteredPlanets.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredPlanets.map((planet) => (
-              <Link href={`/planet/${planet.id}`} key={planet.id} className="group">
+              <Link
+                href={`/planet/${planet.id}`}
+                key={planet.id}
+                className="group"
+              >
                 <div className="relative bg-slate-900/50 backdrop-blur-xl rounded-2xl overflow-hidden border border-slate-700/50 hover:border-orange-500/70 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/20 h-full flex flex-col">
-                  
                   {/* Glow Effect */}
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 via-red-600 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
 
                   <div className="relative z-10 h-full flex flex-col">
-                    
                     {/* Image Container */}
-                    <div className="relative h-56 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-                      
-                      {/* Planet Image with Rotation */}
+                    <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
                       <img
                         src={planet.image_url}
                         alt={planet.name}
-                        className="w-40 h-40 object-contain drop-shadow-[0_0_25px_rgba(255,100,0,0.2)] group-hover:scale-125 group-hover:rotate-6 transition-all duration-700"
+                        className="object-cover w-full h-full opacity-90 group-hover:opacity-100 group-hover:scale-125 group-hover:rotate-6 transition-all duration-700"
                       />
 
                       {/* Overlay Gradient */}
@@ -166,9 +164,9 @@ export default function PlanetsPage() {
 
                       {/* Order Badge (Nomor Urut) */}
                       <div className="absolute top-3 left-3">
-                         <span className="flex items-center justify-center w-8 h-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-white font-bold text-sm shadow-lg">
-                            {planet.order_from_sun}
-                         </span>
+                        <span className="flex items-center justify-center w-8 h-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-white font-bold text-sm shadow-lg">
+                          {planet.order_from_sun}
+                        </span>
                       </div>
 
                       {/* Type Badge */}
@@ -184,54 +182,88 @@ export default function PlanetsPage() {
                       <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-orange-400 group-hover:to-red-400 group-hover:bg-clip-text transition-all duration-300">
                         {planet.name}
                       </h3>
-                      
+
                       {/* Stats Grid */}
                       <div className="mt-auto grid grid-cols-2 gap-2">
-                         <div className="bg-slate-950/50 p-2 rounded-lg border border-slate-800 flex flex-col items-center justify-center text-center">
-                            <Thermometer size={16} className="text-red-400 mb-1" />
-                            <span className="text-[10px] text-slate-400 uppercase">Suhu</span>
-                            <span className="text-xs font-bold text-slate-200">{planet.temperature.split('°')[0]}°</span>
-                         </div>
-                         <div className="bg-slate-950/50 p-2 rounded-lg border border-slate-800 flex flex-col items-center justify-center text-center">
-                            <Activity size={16} className="text-green-400 mb-1" />
-                            <span className="text-[10px] text-slate-400 uppercase">Gravitasi</span>
-                            <span className="text-xs font-bold text-slate-200">{planet.gravity.split(' ')[0]}</span>
-                         </div>
+                        <div className="bg-slate-950/50 p-2 rounded-lg border border-slate-800 flex flex-col items-center justify-center text-center">
+                          <Thermometer
+                            size={16}
+                            className="text-red-400 mb-1"
+                          />
+                          <span className="text-[10px] text-slate-400 uppercase">
+                            Suhu
+                          </span>
+                          <span className="text-xs font-bold text-slate-200">
+                            {planet.temperature.split("°")[0]}°
+                          </span>
+                        </div>
+                        <div className="bg-slate-950/50 p-2 rounded-lg border border-slate-800 flex flex-col items-center justify-center text-center">
+                          <Activity size={16} className="text-green-400 mb-1" />
+                          <span className="text-[10px] text-slate-400 uppercase">
+                            Gravitasi
+                          </span>
+                          <span className="text-xs font-bold text-slate-200">
+                            {planet.gravity.split(" ")[0]}
+                          </span>
+                        </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </Link>
             ))}
           </div>
-        ) : !loading && (
-          /* EMPTY STATE */
-          <div className="text-center py-20 bg-slate-900/30 backdrop-blur-xl rounded-3xl border border-slate-700/50 border-dashed relative overflow-hidden">
-            <div className="relative z-10">
-              <Globe className="mx-auto h-16 w-16 text-slate-600 animate-pulse mb-4" />
-              <h3 className="text-2xl font-bold text-slate-300 mb-2">🔭 Planet Tidak Ditemukan</h3>
-              <p className="text-slate-400">Coba cari nama planet lain.</p>
+        ) : (
+          !loading && (
+            /* EMPTY STATE */
+            <div className="text-center py-20 bg-slate-900/30 backdrop-blur-xl rounded-3xl border border-slate-700/50 border-dashed relative overflow-hidden">
+              <div className="relative z-10">
+                <Globe className="mx-auto h-16 w-16 text-slate-600 animate-pulse mb-4" />
+                <h3 className="text-2xl font-bold text-slate-300 mb-2">
+                  🔭 Planet Tidak Ditemukan
+                </h3>
+                <p className="text-slate-400">Coba cari nama planet lain.</p>
+              </div>
             </div>
-          </div>
+          )
         )}
       </div>
 
       {/* Styles */}
       <style jsx>{`
         @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
+          0%,
+          100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 1;
+          }
         }
         @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
-        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
-        .animate-gradient { background-size: 200% 200%; animation: gradient 4s ease infinite; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-twinkle {
+          animation: twinkle 3s ease-in-out infinite;
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 4s ease infinite;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
     </div>
-  )
+  );
 }
