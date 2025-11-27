@@ -184,12 +184,7 @@ export default function PlanetsPage() {
                       {/* Overlay Gradient */}
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
 
-                      {/* Order Badge (Nomor Urut) */}
-                      <div className="absolute top-3 left-3">
-                        <span className="flex items-center justify-center w-8 h-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-white font-bold text-sm shadow-lg">
-                          {planet.order_from_sun}
-                        </span>
-                      </div>
+                  
 
                       {/* Type Badge */}
                       <div className="absolute top-3 right-3">

@@ -9,7 +9,7 @@ export default function Navigation() {
   const navItems = [
     { href: "/", label: "Home", icon: "🏠" },
     { href: "/planets", label: "Planet", icon: "🌍" },
-    { href: "/objects", label: "Galaksi", icon: "☄️" },
+    { href: "/objects", label: "Objek angkasa", icon: "☄️" },
     { href: "/profile", label: "Profil", icon: "👤" },
   ]
 
