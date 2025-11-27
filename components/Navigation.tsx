@@ -1,148 +1,90 @@
 "use client"
 
-interface NavigationProps {
-  currentPage: "home" | "planets" | "catalog" | "profile" // Tambah "planets"
-  onNavigate: (page: "home" | "planets" | "catalog" | "profile") => void
-}
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
-export default function Navigation({ currentPage, onNavigate }: NavigationProps) {
-  // 2. Update List Item
+export default function Navigation() {
+  const pathname = usePathname()
+
   const navItems = [
-    { id: "home" as const, label: "Home", symbol: "🏠" },
-    { id: "planets" as const, label: "Planet", symbol: "🌍" }, // ITEM BARU
-    { id: "catalog" as const, label: "Galaksi", symbol: "☄️" },
-    { id: "profile" as const, label: "Profil", symbol: "👤" },
+    { href: "/", label: "Home", icon: "🏠" },
+    { href: "/planets", label: "Planet", icon: "🌍" },
+    { href: "/objects", label: "Galaksi", icon: "☄️" },
+    { href: "/profile", label: "Profil", icon: "👤" },
   ]
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <nav className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      {/* Desktop Navbar */}
+      <nav className="hidden md:block fixed top-0 left-0 right-0 z-50
+        bg-[#0A0F1F]/95 backdrop-blur-xl border-b border-[#1a2337]">
+        
+        <div className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
+
           {/* Logo */}
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="relative">
-              <span className="text-4xl group-hover:scale-110 transition-transform duration-300">🌌</span>
-              <div className="absolute inset-0 blur-xl bg-purple-500/30 group-hover:bg-purple-500/50 transition-all duration-300"></div>
-            </div>
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-10 w-10 rounded-xl shadow-lg"
+            />
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 GalaxyLearn
               </h1>
-              <p className="text-xs text-slate-400">Jelajahi Galaksi</p>
+              <p className="text-[10px] text-slate-400">Jelajahi Galaksi</p>
             </div>
           </div>
 
-          {/* Nav Items */}
-          <div className="flex items-center gap-3">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className={`relative px-6 py-3 rounded-full transition-all duration-300 font-semibold overflow-hidden group ${
-                  currentPage === item.id
-                    ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/40"
-                    : "text-slate-300 hover:text-white"
+          {/* Menu */}
+          <div className="flex gap-3">
+            {navItems.map(item => {
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-5 py-2 rounded-full flex items-center gap-2 text-sm font-semibold transition-all
+                    ${
+                      active
+                        ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/40"
+                        : "text-slate-300 hover:text-white hover:bg-white/10"
+                    }`}
+                >
+                  <span>{item.icon}</span>
+                  {item.label}
+                </Link>
+              )
+            })}
+          </div>
+
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A0F1F]/95 backdrop-blur-xl border-t border-[#1a2337]">
+        <div className="flex justify-around h-16">
+          {navItems.map(item => {
+            const active = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center justify-center w-full ${
+                  active ? "text-cyan-400" : "text-slate-400"
                 }`}
               >
-                {/* Hover Background Effect */}
-                {currentPage !== item.id && (
-                  <div className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                )}
-                
-                {/* Glow Effect on Hover */}
-                {currentPage !== item.id && (
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full blur opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
-                )}
-                
-                <span className="relative flex items-center gap-2 z-10">
-                  <span className="text-xl">{item.symbol}</span>
+                <span className={`text-2xl ${active ? "scale-110" : ""}`}>
+                  {item.icon}
+                </span>
+                <span className="text-[10px] font-semibold">
                   {item.label}
                 </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Glow Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-      </nav>
-
-      {/* Mobile Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-t border-slate-800/50">
-        {/* Top Glow Line */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
-        
-        <div className="flex justify-around h-20 relative">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              className={`relative flex flex-col items-center justify-center w-full h-20 transition-all duration-300 ${
-                currentPage === item.id
-                  ? "text-cyan-400"
-                  : "text-slate-400"
-              }`}
-            >
-              {/* Active Indicator - Top Bar */}
-              {currentPage === item.id && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-lg shadow-cyan-500/50"></div>
-              )}
-
-              {/* Icon with Glow */}
-              <div className="relative mb-1">
-                <span className={`text-3xl transition-transform duration-300 ${
-                  currentPage === item.id ? "scale-110" : ""
-                }`}>
-                  {item.symbol}
-                </span>
-                {currentPage === item.id && (
-                  <div className="absolute inset-0 blur-xl bg-cyan-500/40 animate-pulse"></div>
-                )}
-              </div>
-
-              {/* Label */}
-              <span className={`text-xs font-semibold transition-all duration-300 ${
-                currentPage === item.id ? "text-cyan-300" : ""
-              }`}>
-                {item.label}
-              </span>
-
-              {/* Background Glow on Active */}
-              {currentPage === item.id && (
-                <div className="absolute inset-0 bg-gradient-to-t from-cyan-950/30 to-transparent"></div>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Floating Stars Background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                opacity: Math.random() * 0.5 + 0.3
-              }}
-            ></div>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </nav>
-
-      {/* Custom CSS */}
-      <style jsx>{`
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 1; }
-        }
-        .animate-twinkle {
-          animation: twinkle 2s ease-in-out infinite;
-        }
-      `}</style>
     </>
   )
 }
