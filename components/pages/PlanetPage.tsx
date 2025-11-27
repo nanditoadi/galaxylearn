@@ -15,6 +15,14 @@ interface Planet {
   order_from_sun: number;
 }
 
+// 1. Tambahkan interface untuk style bintang agar Type Safe
+interface StarStyle {
+  top: string;
+  left: string;
+  animationDelay: string;
+  opacity: number;
+}
+
 const PLANET_TYPES = ["Semua", "Terrestrial", "Gas Giant", "Ice Giant"];
 
 export default function PlanetsPage() {
@@ -22,6 +30,20 @@ export default function PlanetsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("Semua");
+
+  // 2. Tambahkan state untuk menyimpan posisi bintang
+  const [stars, setStars] = useState<StarStyle[]>([]);
+
+  // 3. Generate posisi bintang hanya di Client (Browser)
+  useEffect(() => {
+    const generatedStars = [...Array(40)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      opacity: Math.random() * 0.7 + 0.3,
+    }));
+    setStars(generatedStars);
+  }, []);
 
   useEffect(() => {
     const fetchPlanets = async () => {
@@ -60,16 +82,16 @@ export default function PlanetsPage() {
           style={{ animationDelay: "1s" }}
         ></div>
 
-        {/* Floating Stars */}
-        {[...Array(40)].map((_, i) => (
+        {/* 4. Render bintang menggunakan data dari state, BUKAN random langsung */}
+        {stars.map((star, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3,
+              top: star.top,
+              left: star.left,
+              animationDelay: star.animationDelay,
+              opacity: star.opacity,
             }}
           ></div>
         ))}

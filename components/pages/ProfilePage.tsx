@@ -1,6 +1,15 @@
 "use client"
 
 import { Mail, Users, Hash, Sparkles, Code, Rocket } from "lucide-react"
+import { useEffect, useState } from "react"
+
+// 1. Tambahkan interface
+interface StarStyle {
+  top: string;
+  left: string;
+  animationDelay: string;
+  opacity: number;
+}
 
 export default function ProfilePage() {
   const profileData = {
@@ -10,6 +19,20 @@ export default function ProfilePage() {
     email: "nanditoadi42@gmail.com",
     praktikum: "Praktikum Perangkat Lunak Bergerak",
   }
+
+  // 2. State untuk menyimpan posisi bintang
+  const [stars, setStars] = useState<StarStyle[]>([])
+
+  // 3. Generate posisi bintang hanya di Client
+  useEffect(() => {
+    const generatedStars = [...Array(50)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      opacity: Math.random() * 0.7 + 0.3
+    }))
+    setStars(generatedStars)
+  }, [])
 
   const skills = ["React", "Next.js", "PWA", "Tailwind CSS", "TypeScript", "JavaScript"]
 
@@ -21,15 +44,16 @@ export default function ProfilePage() {
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" style={{animationDelay: '1s'}}></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] animate-pulse" style={{animationDelay: '2s'}}></div>
         
-        {[...Array(50)].map((_, i) => (
+        {/* 4. Render bintang dari state */}
+        {stars.map((star, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3
+              top: star.top,
+              left: star.left,
+              animationDelay: star.animationDelay,
+              opacity: star.opacity
             }}
           ></div>
         ))}

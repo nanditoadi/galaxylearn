@@ -1,76 +1,106 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase"
-import Link from "next/link"
-import { Search, Filter, Rocket } from "lucide-react" 
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import { Search, Filter, Rocket } from "lucide-react";
 
 interface SpaceObject {
-  id: string
-  name: string
-  type: string
-  image_url: string
+  id: string;
+  name: string;
+  type: string;
+  image_url: string;
   parent_planet?: {
-    name: string
-  }
+    name: string;
+  };
 }
 
-const OBJECT_TYPES = ["Semua", "Moon", "Dwarf Planet", "Asteroid", "Comet"]
+// 1. Tambahkan interface StarStyle
+interface StarStyle {
+  top: string;
+  left: string;
+  animationDelay: string;
+  opacity: number;
+}
+
+const OBJECT_TYPES = ["Semua", "Moon", "Dwarf Planet", "Asteroid", "Comet"];
 
 export default function CatalogPage() {
-  const [objects, setObjects] = useState<SpaceObject[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedType, setSelectedType] = useState("Semua")
+  const [objects, setObjects] = useState<SpaceObject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState("Semua");
+
+  // 2. State untuk menyimpan posisi bintang
+  const [stars, setStars] = useState<StarStyle[]>([]);
+
+  // 3. Generate posisi bintang hanya di Client
+  useEffect(() => {
+    const generatedStars = [...Array(50)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      opacity: Math.random() * 0.7 + 0.3,
+    }));
+    setStars(generatedStars);
+  }, []);
+
   useEffect(() => {
     const fetchObjects = async () => {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from("space_objects")
-        .select(`
+      setLoading(true);
+      const { data, error } = await supabase.from("space_objects").select(`
           *,
           planets ( name )
-        `)
-      
-      if (error) {
-        console.error("Error fetching objects:", error)
-      } else {
-        setObjects(data || [])
-      }
-      setLoading(false)
-    }
+        `);
 
-    fetchObjects()
-  }, [])
+      if (error) {
+        console.error("Error fetching objects:", error);
+      } else {
+        setObjects(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchObjects();
+  }, []);
+
   const filteredObjects = objects.filter((obj) => {
-    const matchesSearch = obj.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = selectedType === "Semua" || obj.type === selectedType
-    return matchesSearch && matchesType
-  })
+    const matchesSearch = obj.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesType = selectedType === "Semua" || obj.type === selectedType;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="min-h-screen bg-slate-950 text-white pt-24 pb-20 px-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] animate-pulse" style={{animationDelay: '2s'}}></div>
-        
-        {[...Array(50)].map((_, i) => (
+        <div
+          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+
+        {/* 4. Render bintang dari state 'stars' */}
+        {stars.map((star, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3
+              top: star.top,
+              left: star.left,
+              animationDelay: star.animationDelay,
+              opacity: star.opacity,
             }}
           ></div>
         ))}
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        
         <div className="mb-10 text-center">
           <div className="relative inline-block mb-4">
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 bg-clip-text text-transparent animate-gradient pb-2">
@@ -79,12 +109,12 @@ export default function CatalogPage() {
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur-2xl opacity-20 animate-pulse"></div>
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
-            ✨ Jelajahi bulan, asteroid, dan objek misterius lainnya di galaksi kita
+            ✨ Jelajahi bulan, asteroid, dan objek misterius lainnya di galaksi
+            kita
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-
           <div className="relative flex-1 group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
             <div className="relative">
@@ -122,7 +152,9 @@ export default function CatalogPage() {
               <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-800 border-t-cyan-500 mb-4"></div>
               <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-xl animate-pulse"></div>
             </div>
-            <p className="text-slate-300 font-medium">🛸 Mengunduh data dari satelit...</p>
+            <p className="text-slate-300 font-medium">
+              🛸 Mengunduh data dari satelit...
+            </p>
           </div>
         )}
 
@@ -131,9 +163,8 @@ export default function CatalogPage() {
             {filteredObjects.map((obj) => (
               <Link href={`/object/${obj.id}`} key={obj.id} className="group">
                 <div className="relative bg-slate-900/50 backdrop-blur-xl rounded-2xl overflow-hidden border border-slate-700/50 hover:border-cyan-500/70 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/30 h-full flex flex-col">
-                  
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-2xl blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                  
+
                   <div className="relative z-10 h-full flex flex-col">
                     <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
                       <img
@@ -153,7 +184,7 @@ export default function CatalogPage() {
                       <h3 className="text-xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-blue-400 group-hover:bg-clip-text transition-all duration-300">
                         {obj.name}
                       </h3>
-                      
+
                       {obj.parent_planet ? (
                         <p className="text-sm text-slate-400 mt-auto flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
@@ -167,35 +198,49 @@ export default function CatalogPage() {
                       )}
                     </div>
                   </div>
-
                 </div>
               </Link>
             ))}
           </div>
-        ) : !loading && (
-  
-          <div className="text-center py-20 bg-slate-900/30 backdrop-blur-xl rounded-3xl border border-slate-700/50 border-dashed relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
-            <div className="relative z-10">
-              <div className="relative inline-block mb-4">
-                <Rocket className="mx-auto h-16 w-16 text-slate-600 animate-bounce" />
-                <div className="absolute inset-0 blur-xl bg-cyan-500/20 animate-pulse"></div>
+        ) : (
+          !loading && (
+            <div className="text-center py-20 bg-slate-900/30 backdrop-blur-xl rounded-3xl border border-slate-700/50 border-dashed relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
+              <div className="relative z-10">
+                <div className="relative inline-block mb-4">
+                  <Rocket className="mx-auto h-16 w-16 text-slate-600 animate-bounce" />
+                  <div className="absolute inset-0 blur-xl bg-cyan-500/20 animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-300 mb-2">
+                  🌌 Objek Tidak Ditemukan
+                </h3>
+                <p className="text-slate-400">
+                  Coba ganti kata kunci pencarian Anda.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-slate-300 mb-2">🌌 Objek Tidak Ditemukan</h3>
-              <p className="text-slate-400">Coba ganti kata kunci pencarian Anda.</p>
             </div>
-          </div>
+          )
         )}
       </div>
 
       <style jsx>{`
         @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
+          0%,
+          100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 1;
+          }
         }
         @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
         .animate-twinkle {
           animation: twinkle 3s ease-in-out infinite;
@@ -213,5 +258,5 @@ export default function CatalogPage() {
         }
       `}</style>
     </div>
-  )
+  );
 }

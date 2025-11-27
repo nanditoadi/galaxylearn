@@ -2,8 +2,31 @@
 
 import Link from "next/link"
 import { Telescope, Globe, Sparkles, ArrowRight } from "lucide-react"
+import { useEffect, useState } from "react" // 1. Import useEffect dan useState
+
+// Definisi tipe data untuk bintang (opsional tapi bagus untuk TS)
+type StarStyle = {
+  top: string;
+  left: string;
+  animationDelay: string;
+  opacity: number;
+}
 
 export default function HomePage() {
+  // 2. State untuk menyimpan posisi bintang
+  const [stars, setStars] = useState<StarStyle[]>([])
+
+  // 3. Generate posisi bintang HANYA setelah komponen dimuat di browser (Client-side)
+  useEffect(() => {
+    const generatedStars = [...Array(100)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      opacity: Math.random() * 0.7 + 0.3
+    }))
+    setStars(generatedStars)
+  }, [])
+
   const stats = [
     { label: "Planet", value: "8", icon: "🪐" },
     { label: "Objek Angkasa", value: "10+", icon: "🌙" },
@@ -35,16 +58,16 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[100px] animate-pulse" style={{animationDelay: '1.5s'}}></div>
         
-        {/* Floating Stars */}
-        {[...Array(100)].map((_, i) => (
+        {/* Floating Stars - 4. Render bintang dari state 'stars' */}
+        {stars.map((star, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3
+              top: star.top,
+              left: star.left,
+              animationDelay: star.animationDelay,
+              opacity: star.opacity
             }}
           ></div>
         ))}
