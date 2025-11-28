@@ -2,8 +2,25 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GalaxyLearn</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+
+    <!-- PWA Essentials -->
+    <meta name="theme-color" content="#667eea" />
+    <meta name="description" content="Aplikasi GalaxyLearn - Belajar dengan cepat dan mudah, bahkan saat offline." />
+
+    <!-- Apple PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="GalaxyLearn" />
+
+    <title>GalaxyLearn - Offline Mode</title>
+
+    <!-- Styling -->
     <style>
       * {
         margin: 0;
@@ -150,11 +167,14 @@
       }
     </style>
   </head>
+
   <body>
     <div class="offline-container">
       <div class="offline-icon">🎬</div>
+
       <h1>Anda Sedang Offline</h1>
-      <p>Koneksi internet Anda terputus, tetapi Anda masih dapat menikmati fitur CineHub yang sudah di-cache.</p>
+
+      <p>Koneksi internet Anda terputus, tetapi Anda masih dapat menikmati fitur GalaxyLearn yang sudah di-cache.</p>
 
       <div class="offline-features">
         <div class="feature">Jelajahi Film yang Sudah Dimuat</div>
@@ -173,17 +193,17 @@
 
     <script>
       function tryReload() {
-        location.reload()
+        location.reload();
       }
 
       function goHome() {
-        window.location.href = "/"
+        window.location.href = "/";
       }
 
-      // Listen for online event
-      window.addEventListener("online", function () {
-        location.reload()
-      })
+      // When user gets online again → Reload automatically
+      window.addEventListener("online", () => {
+        location.reload();
+      });
     </script>
   </body>
 </html>

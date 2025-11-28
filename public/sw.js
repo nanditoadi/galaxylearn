@@ -1,5 +1,5 @@
 // Service Worker for offline functionality
-const CACHE_NAME = "cinehub-v1"
+const CACHE_NAME = "galaxylearn-v1"
 const urlsToCache = [
   "/",
   "/manifest.webmanifest",

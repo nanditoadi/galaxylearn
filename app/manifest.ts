@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "CineHub - Film Catalog",
-    short_name: "CineHub",
-    description: "Aplikasi katalog film dengan koleksi terbaik dunia",
+    name: "GalaxyLearn - Jelajahi planet dan objek angkasa",
+    short_name: "GalaxyLearn",
+    description: "GalaxyLearn adalah ensiklopedia interaktif yang menyajikan informasi lengkap tentang tata surya kita. Pelajari karakteristik unik setiap planet, dari planet berbatu seperti Merkurius dan Mars, hingga raksasa gas seperti Jupiter dan Saturnus.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

@@ -2,7 +2,7 @@
 
 declare const self: ServiceWorkerGlobalScope
 
-const CACHE_NAME = "cinehub-v1"
+const CACHE_NAME = "galaxylearn-v1"
 const PRECACHE_URLS = ["/", "/offline.html", "/icon-192x192.png", "/icon-512x512.png"]
 
 const STATIC_ASSETS = [/\.(js|css|woff|woff2)$/, /\/placeholder\.svg/]

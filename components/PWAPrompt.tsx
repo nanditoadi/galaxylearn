@@ -44,7 +44,7 @@ export default function PWAPrompt() {
           <div className="flex items-center gap-2">
             <span className="text-xl">📱</span>
             <div>
-              <h3 className="font-semibold text-gray-900">Install CineHub</h3>
+              <h3 className="font-semibold text-gray-900">Install Galaxylearn</h3>
               <p className="text-sm text-gray-600">Akses offline dan lebih cepat</p>
             </div>
           </div>

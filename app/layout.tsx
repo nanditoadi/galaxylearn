@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "GalaxyLearn", // ⬅ sebelumnya masih "CineHub"
+    title: "GalaxyLearn", 
   },
   generator: "v0.app",
 };
